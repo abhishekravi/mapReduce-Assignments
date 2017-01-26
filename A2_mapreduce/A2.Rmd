@@ -1,0 +1,79 @@
+---
+title: "Map Reduce CS 6240 (A2)"
+author: "Abhishek Ravi Chandran, Chinmayee Vaidya"
+date: "Jan 29, 2016"
+output: pdf_document
+---
+This report is for assignment A2, plotting monthly means for carriers active in 2015
+
+# Design
+We used map reduce for this assignment to read all the files and calculate the mean for the carriers active in the year 2015
+We copied all the input files in the hdfs system. The input folder containing the files in hdfs is given as a command line argument to the program.
+The mapper then reads all the files recursively. we process only good records, corrupt records are ignored.
+We have carrier,month as the key and the average prices and year as the value
+
+This is then passed on to the reducer, where we calculate the mean and total for each of the key.
+We pass the same key to the output, with the mean total as the values.
+
+The output will ultimately contain carrier,month,meanprice,total and year.
+
+This is then used by a R script to generate the graph
+
+#Graph:
+
+```{r message=FALSE, warning=FALSE}
+library(data.table)
+# Reading the output into object results
+results <- read.csv(file = "part-r-00000", header = FALSE, sep = ",")
+colnames(results) <- c("carrier","month", "year", "total", "avg")
+
+#get only 2015 records
+only2015 <- results[results$year == 2015,]
+
+#get only unique records
+only2015_unique <- only2015[!duplicated(only2015$carrier),]
+
+#get only the carrier names
+col_array <- as.vector(only2015['carrier'])
+
+#filter out the carriers not active in 2015
+desired_values = data.frame(matrix(NA, nrow = nrow(results), ncol = 5))
+colnames(desired_values) <- c("carrier","month", "year", "total", "avg")
+
+
+
+for(i in 1:dim(only2015)[1]) {
+  temp <- results[only2015_unique$carrier[i] == results$carrier,]
+  desired_values <- rbind(desired_values,temp)
+  
+}
+
+#remove NA values
+without_na <- desired_values[!(is.na(desired_values$carrier)), ]
+without_na <- data.table(without_na)
+
+
+without_na_sorted <- without_na[, sum(total), by = carrier]
+colnames(without_na_sorted) <- c("carrier", "total")
+#sorting according to total
+sorted <- without_na_sorted[order(-total),]
+
+
+final_filtered = data.frame(matrix(NA, nrow = nrow(results), ncol = 5))
+colnames(final_filtered) <- c("carrier","month", "year", "total", "avg")
+
+#fetching only the top ten carriers
+for(i in 1:10) {
+  temp <- results[sorted$carrier[i] == results$carrier,]
+  final_filtered <- rbind(final_filtered,temp)
+}
+
+
+final_filtered <- final_filtered[!(is.na(final_filtered$carrier)), ]
+
+library(igraph)
+# Loading full data
+require(ggplot2)
+names(final_filtered) <- c("carrier", "month","year", "total", "avg")
+qplot(data=final_filtered, xlab = "Month_Year", ylab = "Price", x=factor(month), y=avg, color=carrier,shape=carrier,geom=c("line","point"))
+```

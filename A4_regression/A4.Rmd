@@ -1,0 +1,116 @@
+---
+title: "A4"
+author: "Abhishek Ravi Chandran, Chinmayee Vaidya"
+date: "February 12, 2016"
+output: pdf_document
+---
+
+# Design
+In this assignment we perform simple linear regression with the predictor as time to try and find out the cheapest price of a carrier for a certain time N.
+
+We run 2 jobs one after the other to perform the analysis. The first job groups all the flights together by year and carrier and get the values scheduled elapsed time and price.
+This is then passed to the reducer, where we apply simple regression by calculating slope and intercept for the data. The we get the linear regression for N by calculating  intercept+slope*N.
+
+This is then output to a file.
+
+Then we have a java method that reads the ouput files from s3 to compare all the flights every year. The flight that has the lowest price the most number of times for all the years is returned and passed to the second job.
+
+In the second job we only filter out the records for the flight given be the above method. Then we calculate the median for every week. We used our fast median method that was implemented last time.
+
+The output is then downloaded from s3, which is then read by R to produce the report.
+
+The graph below shows the cheapest fligts for N=1 and N=200
+
+
+
+```{r, echo=FALSE,fig.width=15, fig.height=7,warning=FALSE,message=FALSE}
+results1 <- data.frame(year=numeric(),
+                 week=numeric(),
+                 carrier=character(),
+                 price=numeric(),
+                 stringsAsFactors=FALSE) 
+files1 <- dir("output1_final",pattern = 'pa\\.*')
+path1=paste(getwd(),"output1_final", sep="/")
+for (f in files1){
+  results1 <- rbind(results1,read.csv(paste(path1,f,sep="/"), sep = "", header = FALSE))
+}
+
+colnames(results1) <- c("year", "week", "carrier","price")
+res1<-results1[order(results1[,1],results1[,2]),]
+carr1<-res1[1,"carrier"]
+
+##################################reading second set of files######################
+results2 <- data.frame(year=numeric(),
+                 week=numeric(),
+                 carrier=character(),
+                 price=numeric(),
+                 stringsAsFactors=FALSE) 
+files2 <- dir("output200_final",pattern = 'pa\\.*')
+path2=paste(getwd(),"output200_final", sep="/")
+for (f in files2){
+  results2 <- rbind(results2,read.csv(paste(path2,f,sep="/"), sep = "", header = FALSE))
+}
+
+colnames(results2) <- c("year", "week", "carrier","price")
+res2<-results2[order(results2[,1],results2[,2]),]
+carr2<-res2[1,"carrier"]
+```
+
+#Median Graph:
+X-Scale - Weeks
+
+Carrier: `r carr1` For N=1
+
+```{r, echo=FALSE,fig.width=15, fig.height=7,warning=FALSE,message=FALSE}
+vals1 <- data.frame(key=character(),
+                 price=double(),
+                 stringsAsFactors=FALSE) 
+for(i in 1:nrow(res1)){
+    k<-paste(res1[i,"year"],"-",res1[i,"week"])
+    vals1[i,"key"]<-k
+    vals1[i,"price"]<-res1[i,"price"]
+  }
+#Turn your 'treatment' column into a character vector
+vals1$key <- as.character(vals1$key)
+#Then turn it back into an ordered factor
+vals1$key <- factor(vals1$key, levels=unique(vals1$key))
+require(ggplot2)
+lab <- seq(res1[1,"year"])
+qplot(data=vals1, 
+       xlab = "Year-Week", 
+       ylab = "Price", 
+       x=key, 
+       y=price, 
+       geom=c("line","point"))+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+#Median Graph:
+X-Scale - Weeks
+
+Carrier: `r carr2` For N=200
+
+```{r, echo=FALSE,fig.width=15, fig.height=7,warning=FALSE,message=FALSE}
+vals2 <- data.frame(key=character(),
+                 price=double(),
+                 stringsAsFactors=FALSE) 
+for(i in 1:nrow(res2)){
+    k<-paste(res2[i,"year"],"-",res2[i,"week"])
+    vals2[i,"key"]<-k
+    vals2[i,"price"]<-res2[i,"price"]
+  }
+#Turn your 'treatment' column into a character vector
+vals2$key <- as.character(vals2$key)
+#Then turn it back into an ordered factor
+vals2$key <- factor(vals2$key, levels=unique(vals2$key))
+require(ggplot2)
+
+qplot(data=vals2, 
+       xlab = "Year-Week", 
+       ylab = "Price", 
+       x=key, 
+       y=price, 
+       geom=c("line","point"))+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```

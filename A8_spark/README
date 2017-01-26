@@ -1,0 +1,45 @@
+Pre-requisite:
+	Please make sure maven is installed in your system for the build 
+	script to run
+
+	We are using jdk 7 to compile the jar, please make sure your machine 
+	is pointing to a jdk 7 installation
+
+	Please make sure that complete latex package is installed to ensure that 
+	the rmd script to create the report runs smoothly without any problems
+
+	If you run into permission issues for build, please run the command 
+	with sudo. 
+
+	Make sure that aws is configured, as the script uses aws commands to 
+	download the output files and create a cluster
+
+Before running the code:
+	Please edit the makefile to configure the required parameters
+	BUCKET = this will be the name of the bucket you choose
+	REGION = the region in which you wish to provision your cluster
+	KEY_NAME = name of the EC2 key that you generated for that region
+	SPARK_PATH = path of your spark installation
+	INPUT = path of input in you local system
+
+	For the KEY_NAME - create a EC2 key pair for the region in which you wish
+  		      	    to provision the cluster and put the name of that key 
+		            as the value to this argument
+	
+	Tutorial for creating an EC2 key pair
+	http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair
+
+To run the program on aws:
+	-build the jar(make build)
+	-create the bucket(make setupCloud)
+	-upload the jar(make upload)
+	-run the program and download the output(make run)
+	-generate the report(make report)
+
+To run the program locally
+	-build the jar(make build)
+	-run the program(make pseudo)
+
+Flow: 
+	make build -> make setupCloud -> make upload -> make run -> make report
+	make build -> make pseudo	

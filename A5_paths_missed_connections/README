@@ -1,0 +1,62 @@
+pre-requisite:
+Please make sure maven is installed in your system for the build script to run
+We are using jdk 7 to compile the jar, please make sure your machine is pointing to a jdk 7 installation
+please make sure that complete latex package is installed to ensure that the rmd script to create the report runs smoothly without any problems
+If you run into permission issues for build, please run the command with sudo.
+make sure that aws is configured, as the script uses aws commands to download the output files
+
+We have used professor's uber-perf-0.0.1 jar to run our program. So please make sure that the jar is setup and can be used
+
+before running the code:
+please edit the makefile to change the input and output directories
+AWS_ACCESS_KEY = will have the value for you aws key
+AWS_ACCESS_ID = Please put you aws id here
+INPUT = this is the input folder in s3 having the data
+PINPUT = this is the input folder in local
+OUTPUT = this will be the output folder
+BUCKET = this will be the name of the bucket you choose
+
+
+To run the program:
+	-setup all parameters like keys and perf file for the uber-perf-0.0.1 jar
+	-build the jar(make build)
+	-upload the jar to s3(make upload)
+	-run the program(make run)
+
+
+compiling:
+----------
+make build
+
+Uploading jar
+------------
+make upload
+
+To run the program in aws:
+------------------
+make run
+
+To run the program in pseudo mode:
+------------------
+make pseudo
+
+Package Content:
+----------------
+output folder - contains output files generated on aws for 2 years data
+sample_output - contains output for the 2 sample files given
+A5.java - main driver class
+A5.pdf - generated pdf report
+A5.Rmd - markdown script to generate report with output table
+BadDataException - custom Exception class
+CkeyComparator - used for secondary sort
+Constants - holds constants used in program
+CPartitioner - custom partitioner
+CustomKey - custom key to hold record type
+CWritable - custom writable class to hold values needed
+CWritableGroupComp - group comparator to group by natural key
+Makefile - scripts to compile and run code
+perf.txt - config file for uber-perf-0.0.1 jar
+pom.xml - maven build script
+RecordData - holds record data
+Util - util class
+

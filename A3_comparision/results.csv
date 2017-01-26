@@ -1,0 +1,12 @@
+i-median,plain,169
+i-fastmed,plain,182
+i-mean,plain,184
+ii-median,plain,140
+ii-fastmed,plain,135
+ii-mean,plain,137
+iii-median,local,251
+iii-fastmed,local,243
+iii-mean,local,236
+iv-median,cloud,159
+iv-fastmed,cloud,163
+iv-mean,cloud,175

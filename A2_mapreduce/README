@@ -1,0 +1,15 @@
+compile the code:
+run 'make build' to compile the code
+
+running the code:
+run 'make run' will run the hadoop code on the local cluster
+
+'make pseudo' will format the hdfs in the local system, start hadoop, compile the code and run the job
+
+
+creating report:
+to create report copy the output file part-r-00000 to the current directory where the A2.Rmd script is and run 'make graph'
+this will produce the pdf A2.pdf
+
+
+

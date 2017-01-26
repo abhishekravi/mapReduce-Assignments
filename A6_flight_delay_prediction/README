@@ -1,0 +1,71 @@
+pre-requisite:
+-------------
+Please make sure maven is installed in your system for the build script to run
+We are using jdk 7 to compile the jar, please make sure your machine is pointing to a jdk 7 installation
+please make sure that complete latex package is installed to ensure that the rmd script to create the report runs smoothly without any problems
+If you run into permission issues for build, please run the command with sudo.
+make sure that aws is configured, as the script uses aws commands to download the output files
+please download the validate file 98validate.csv.gz to you local storage and extract the csv file.
+
+before running the code:
+-----------------------
+please edit the makefile to change the input and output directories
+AWS_ACCESS_KEY = will have the value for you aws key
+AWS_ACCESS_ID = Please put you aws id here
+HINPUT = this is the folder where the historical data exists
+TINPUT = this is the folder where the historical data exists
+OUTPUT = output folder name
+BUCKET = s3 bucket name
+VPATH = local path of where the 98validate.csv file is
+FSPATH = hadoop root path
+LOGPATH = logs folder name in s3
+
+We have used Prof. Jan Vitek's uber-perf-0.0.1 jar to run the code. So please make sure to place the jar in the source folder and  configured in your system with the appropriate key name and other required parameters.
+This will ensure the whole running process is automated
+
+If not you can still use make cloud, but you will manually have to run make report after the job terminates
+
+To run the program:
+	-setup all parameters like keys and perf file for the uber-perf-0.0.1 jar
+	-build the jar
+	-upload the jar to s3
+	-run the program
+
+compiling:
+----------
+make build
+
+setup
+-----
+make setup
+this will upload the job.jar created after build step to the bucket you have chose and do all cleanup
+
+run:
+-------
+make run
+this will automatically generate the report after the job terminates in aws
+
+
+running manually:
+--------
+make cloud
+make report
+
+This will run the job in aws, but you will have to run make report once the job is done
+
+Package content:
+The pakcage contains the following:
+A6.pdf - report generated
+perf.txt - used by uber-perf-0.0.1.jar, please edit it to the settings of you machine and AWS cluster
+pom.xml - maven build script
+results.csv - output file containing performance data
+Makefile - has commands to compile and run the code
+A6.Rmd - rscript to create the report
+A6.java - main driver class for the hadoop program
+AWSHelperClass.java - helper class used by the program to upload and download files from and to s3
+BadDataException.java - custom exception class
+Constants.java - holds all program constants
+RecordData.java - data structure to hold record data
+Flight.java - data structure to hold record data
+Util.java - contains utility methods
+Output.java - program to get confusion matrix after execution

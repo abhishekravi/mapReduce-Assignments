@@ -1,0 +1,19 @@
+Description:
+The program scans a directory and processes all the files in it. each file is handled by a seperate thread. all the files are processed sequentially and each line is processed one at a time. The headers are read first, then a map is created with the header name and value pairs. This is then sent to a processing method, where all the sanity checks are performed. If the records is bad, we skip it. If it is good, then we have a carrier object where the carrier name, number for flights and total average cost is stored
+
+For we store all the prices only if the flights were active during JAN 2015
+We have a synchronized method at the end after all the records have been processed, where the common global data variable is updated by the threads. Through synchronization we can make sure that each thread accesses the object seperately by acquiring a lock on the object.
+
+After all threads are finished, they join the main thread where the average is calculated(Total /number of records) and median(sort in ascending order and select the middle element)
+
+INPUT:
+The program takes a directory path as the input in the command line arguments. The program will then process all the files in the directory.
+
+compiling the code:
+use make to compile the code
+
+command to run:
+./A1 -p -DIR=<directory path>
+
+ex:
+./A1 -p -DIR=/home/user/all

@@ -1,0 +1,68 @@
+pre-requisite:
+-Please make sure maven is installed in your system for the build script to run
+-We are using jdk 7 to compile the jar, please make sure your machine is pointing to a jdk 7 installation
+-please make sure that complete latex package is installed to ensure that the rmd script to create the report runs smoothly without any problems
+-If you run into permission issues for build, please run the command with sudo.
+-Make sure that aws is configured, as the script uses aws commands to download the output files
+
+rpackages to be installed:
+ggplot
+rmarkdown
+
+before running the code:
+-please edit the Makefile to change the input 
+AWS_ACCESS_KEY = will have the value for you aws key
+AWS_ACCESS_ID = Please put you aws id here
+INPUT = it points to s3://mrclassvitek/data. If you want to change the path please change it to the bucket you choose with the input path
+BUCKET = this will be the name of the bucket you choose
+
+-*Do not change the output folder names as these are used by the rscript
+
+-We have used Prof. Jan Vitek's uber-perf-0.0.1 jar to run the code. So please make sure to place the jar in the source folder and  configured in your system with the appropriate key name and other required parameters.
+
+To run the program:
+	-setup all parameters like keys and perf file for the uber-perf-0.0.1 jar
+	-build the jar
+	-upload the jar to s3
+	-run the program
+
+compiling:
+----------
+make build
+
+upload:
+-------
+make upload
+this will upload the job.jar created after build step to the bucket you have chosen
+
+running:
+--------
+make run
+
+This will run the jobs sequentially, 1st with time=1 and then the time=200 job
+Note: Each job takes ~1hr to run, please leave the command to run for the time period, after both jobs have been executed, the output files are downloaded automatically, and the graph will be created.
+
+if you want to run the jobs in parallel you can use the following commands in seperate terminals
+
+make runn1
+make runn200
+
+You will have to check and see if both the jobs have finished executing, after which you can run 'make graph' to get the report
+
+Package content:
+The pakcage contains the following:
+A4.pdf - report generated
+perf.txt - used by uber-perf-0.0.1.jar, please edit it to the settings of you machine and AWS cluster
+pom.xml - maven build script
+results.csv - output file containing performance data
+Makefile - has commands to compile and run the code
+A4.Rmd - rscript to create the report, needs R with ggplot and latex to be installed
+A4.java - main driver class for the hadoop program
+AWSHelperClass.java - helper class used by the program to read files from s3 to read output files for processing
+BadDataException.java - custom exception class
+Constants.java - holds all program constants
+DataValidator.java - class that validates data
+Parser.java - class to parse csv data
+RecordData.java - data structure to hold record data
+Util.java - contains utility methods
+LinearRegression.java - has methods to perform LinearRegression calculations

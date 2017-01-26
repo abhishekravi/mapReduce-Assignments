@@ -1,0 +1,12 @@
+Description:
+The program reads the file sequentially and each line is processed one at a time. The headers are read first, then a map is created with the header name and value pairs. This is then sent to a processing method, where all the sanity checks are performed. If the records is bad, we skip it. If it is good, then we have a carrier object where the carrier name, number for flights and total average cost is stored. When any of these values are updated, when calculate the mean price for all the records processed so far, ensures that we don't have to iterate again to do the mean calculations.
+after all the records are processed, the carrier data along with the mean prices are sorted in ascending order with repect to the mean price of the carrier
+
+INPUT:
+The program takes the file name as the input in the command line arguments. *The file has to be in the same directory as the running code
+
+command to run:
+java MapReduceInhale <filename>
+
+ex:
+java MapReduceInhale 323.csv.gz

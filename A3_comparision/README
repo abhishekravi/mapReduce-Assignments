@@ -1,0 +1,54 @@
+pre-requisite:
+Please place professor's uber-perf-0.0.1.jar in the source folder before running the code.
+Please make sure maven is installed in your system for the build script to run
+We are using jdk 7 to compile the jar, please make sure your machine is pointing to a jdk 7 installation
+please make sure that complete latex package is installed to ensure that the rmd script to create the report runs smoothly without any problems
+If you run into permission issues for build, please run the command with sudo.
+if the make graph part does not work, u can open the Rmd file in Rstudio and click on knit pdf to get the report
+please upload the job.jar that you get after build to s3 before running the job in aws
+
+before running the code:
+please edit the makefile to change the input and output directories
+AWS_ACCESS_KEY = please paste you aws key here
+AWS_ACCESS_ID = Please put you aws id here
+INPUT = input folder for the single thread and multi thread jobs
+OUTPUT = this will be the output for above, the programs write the output to console, so you can leave this blank
+INPUT_LMR = input hdfs path in your local cluster
+OUTPUT_LMR = outout hdfs path in your local cluster
+INPUT_CMR = input hdfs path in s3
+OUTPUT_CMR = output hdfs path in s3
+JAR_PATH = Please enter the path to jar in s3
+FS_ROOT = Please enter the path of the root for your s3 cluster.
+
+We have used Prof. Jan Vitek's uber-perf-0.0.1 jar to run the code. So please make sure it is configured in your system with the appropriate key name and other required parameters.
+
+
+compiling:
+make build
+
+running:
+make run
+
+creating graph:
+make graph
+
+Package content:
+The pakcage contains the following:
+A3.pdf - report generated
+perf.txt - used by uber-perf-0.0.1.jar, please edit it to the settings of you machine and AWS cluster
+pom.xml - maven build script
+results.csv - output file containing performance data
+Makefile - has commands to compile and run the code
+A3.Rmd - rscript to create the report, needs R with ggplot and latex to be installed
+A3.java - main driver class for the hadoop program
+BadDataException.java - custom exception class
+CarrierMonthWritable.java - custom writable class
+Constants.java - holds all program constants
+DataValidator.java - class that validates data
+MultiThreadSol.java - main class for multi threading solution
+Parser.java - class to parse csv data
+PlainDataHolder.java - used by plain java programs to hold intermediate data
+RecordData.java - data structure to hold record data
+SingleThreadSol.java - single thread solution class
+Util.java - contains utility methods
+

@@ -1,0 +1,45 @@
+Pre-requisite:
+	Please make sure maven is installed in your system for the build 
+	script to run
+
+	We are using jdk 7 to compile the jar, please make sure your machine 
+	is pointing to a jdk 7 installation
+
+	Please make sure that complete latex package is installed to ensure that 
+	the rmd script to create the report runs smoothly without any problems
+
+	If you run into permission issues for build, please run the command 
+	with sudo. 
+
+	Make sure that aws is configured, as the script uses aws commands to 
+	download the output files
+
+Before running the code:
+	Please edit the makefile to add the bucket name
+	BUCKET = this will be the name of the bucket you choose
+
+To run the program:
+	-build the jar(make build)
+	-upload the jar to s3 and sync required files (make setupCloud)
+	-run the program(make run)
+	-download and validate the output after job run is complete (make validate)
+	-generate the report(make report)
+
+Flow: 
+	make build -> make setupCloud -> make run -> make validate -> make report
+
+Work-distribution:
+	- Design strategy and algorithm
+		- Abhishek, Chinmayee, Chintan, Mania
+
+	- Modeling job
+		- Abhishek, Mania
+
+	- Model generation job and prediction job
+		- Chintan, Chinmayee
+
+	- Validation
+		- Chinmayee, Mania
+
+	- Report and build scripts
+		- Abhishek, Chinmayee, Chintan, Mania
